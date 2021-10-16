@@ -17,9 +17,9 @@ app.set('view engine', 'html');
 
 
 // --- ROUTING
-app.get('/', function(request, response) {
-    response.render('index.html');
-});
+// app.get('/', function(request, response) {
+//     response.render('index.html');
+// });
 
 app.get('/experiment', function(request, response) {
     response.render('Stroop_colorword.html');
