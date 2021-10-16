@@ -1,0 +1,701 @@
+ <!DOCTYPE html> 
+<html>  
+  <head>  
+    <meta charset="UTF-8">  
+    <meta name="description" content="jsPsych Phase 2 Data Task">  
+    <meta name="keywords" content="HTML, CSS, JavaScript">  
+    <meta name="author" content="Jason Steffener, NCMLab">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>Phase 2 Data</title>  
+   
+    
+    <script src="../../jspsych/jspsych.js"></script>  
+    <script src="../../jspsych/plugins/jspsych-html-keyboard-response.js"></script> 
+    <script src="../../jspsych/plugins/jspsych-image-keyboard-response.js"></script>  
+    <script src="../../jspsych/plugins/jspsych-fullscreen.js"></script> 
+    <script src="../../jspsych/plugins/jspsych-html-button-response.js"></script> 
+    <script src="../../jspsych/plugins/jspsych-instructions.js"></script> 
+    <script src="../views/Stroop_Setup_EN.js"></script> 
+    <script src="../../jspsych/plugins/jspsych-webgazer-init-camera.js"></script> 
+    <script src="../../jspsych/plugins/jspsych-survey-text.js"></script>
+    <script src="../../jspsych/plugins/jspsych-survey-likert.js"></script> 
+    <script src="../../jspsych/plugins/jspsych-survey-multi-choice.js"></script>
+    <script src="../../jspsych/plugins/jspsych-survey-audio-multi-choice.js"></script>
+
+    <script src="../../jspsych/plugins/jspsych-webgazer-validate.js"></script> 
+    <script src="../../jspsych/plugins/jspsych-external-html.js"></script>  
+    <script src="../../jspsych/plugins/jspsych-call-function.js"></script>  
+    <script src="../../jspsych/plugins/jspsych-webgazer-calibrate.js"></script> 
+    <script src="../../jspsych/examples/js/webgazer/webgazer.js"></script>  
+    <script src="../../jspsych/extensions/jspsych-ext-webgazer.js"></script>  
+    <script src="https://smtpjs.com/v3/smtp.js"></script> 
+    <script src="../../jspsych/plugins/jspsych-video-button-response.js"></script> 
+    <script src="../views/tmt.js"></script>
+    
+    
+    <script src="../../jspsych/plugins/jspsych-image-button-response.js"></script> 
+    <script src="../../jspsych/plugins/jspsych-preload.js"></script>
+    <!-- <link href="jspsych/css/jspsych.css" rel="stylesheet" type="text/css"> --> 
+    <link href="../../jspsych/css/jspsych.css" rel="stylesheet" type="text/css">  
+     <script src="../saver/fileSaver.js"></script>  
+    <link href="../css/Stroop.css" rel="stylesheet">  
+    <style> 
+      .stimulus { font-size: StimulusFontSize; }  
+    </style>  
+  </head> 
+   <body> 
+    <video controls></video>  
+  </body> 
+  <script>  
+  /*<?php 
+    $post_data = json_decode(file_get_contents('php://input'), true);   
+    // the directory "data" must be writable by the server  
+    $name = "data/".$post_data['filename'].".csv";  
+    $data = $post_data['filedata']; 
+    // write the file to disk 
+    file_put_contents($name, $data);  
+    ?>*/  
+    var subject_id = jsPsych.randomization.randomID(15);  
+    subject_id = subject_id.toString()  
+     var init_camera = {  
+      type: "webgazer-init-camera", // what's with the extra width  
+    };  
+   var overview = {
+    type: 'image-button-response',
+    stimulus: '../../assets/images/overview.jpg',
+    choices: ['continue'],
+    prompt: "<p>You'll see detailed instructions ahead. Press continue to proceed.</p>"
+    };
+   
+   
+   var scale_1 = [
+  "Yes"
+   ];
+
+var likert_page = {
+  type: 'survey-likert',
+  questions: [
+    {prompt: "Does your system have a working webcam?", name: 'Webcam', labels: scale_1, required:true},
+    {prompt: "Is your room sufficiently lit with the light being in front of your face rather than back?", name: 'Light', labels: scale_1,required:true},
+    {prompt: "You voluntarily participate in this study and have already signed the consent form.", name: 'Consent', labels: scale_1,required:true},
+                                                          
+  ],
+  preamble: '<h1>Before you proceed</h1>' , 
+  randomize_question_order: false
+};
+   
+    var validation = {  
+      type: "webgazer-calibrate", 
+      randomize_calibration_order:true, 
+      repetitions_per_point:1,  //back to 2  
+    }; 
+    var survey_page1 = {  
+    type: 'survey-text',  
+    questions: [  
+      {prompt: 'Name : ', columns: 50, name: 'firstname'},  
+      {prompt: 'Age : ', columns: 3, name: 'Age',required: true},
+      {prompt: "Gender",  placeholder: ' M/F', columns:15, name:'Gender',required: true},  
+      {prompt: "Have you taken this test before?",  placeholder: 'type Yes/No', columns:15, name:'prior_practice'},
+      {prompt: "Do you have any pre condition (such as ADHD, ASD, Autism, Dyslexia, other Learning Disabilities etc.)",  placeholder: 'type Yes/No', columns:15, name:'Medical_history',required: true},
+      {prompt: "If yes, please mention about it",  placeholder: 'ADHD/ ASD/ Autism/ Dyslexia/ Other Learning Disabilities/ Prefer not to say', columns:70, name:'Medical_history_2'},
+    ],
+    preamble: '<h1>Basic information</h1>' ,  
+  }; 
+   
+ 
+        var instructions_cal = {  
+      type: 'html-button-response', 
+      stimulus: '<div style="width: 800px;border: thin solid #0000FF ; border-radius: 10px ;">'+  
+      `
+            <ul>
+            <li style="text-align:left; padding:8px; font-size: 18px">    Now we will calibrate the web gazer.</li>
+            <li style="text-align:left; padding:8px; font-size: 18px">It will take 2-3 minutes.</li>
+            <li style="text-align:left; padding:8px; font-size: 18px">On the next screen you will see a sequence of black dots. There will be 20 of them.</li>
+            <li style="text-align:left; padding:8px; font-size: 18px">Keep your head steady and look at each dot for atleast 3 seconds, then click the dot.</li>
+            </ul>`
+
+        +  
+        '</div>', 
+      choices: ["Continue"] ,
+      
+    } 
+    
+    var validation_instructions = {
+    type: 'html-button-response',
+    stimulus: `<div style="width: 800px;border: thin solid #0000FF ; border-radius: 10px ;">
+      <p>Let's see how accurate the eye tracking is. </p>
+      <p>Keep your head still, and move your eyes to focus on each dot as it appears.</p>
+      <p>You do not need to click on the dots. Just move your eyes to look at the dots.</p>
+    `,
+    choices: ['Click to begin'],
+    post_trial_gap: 1000
+  }
+
+  var validate = {
+    type: 'webgazer-validate',
+    validation_points: [[25,25], [25,75], [75,25], [75,75]],
+    show_validation_data: true,
+   on_finish: function(){
+      // jsPsych.extensions["webgazer"].pause();
+      jsPsych.extensions["webgazer"].hidePredictions();
+    },
+  }
+  var subject_id = jsPsych.randomization.randomID(15);  
+  subject_id = subject_id.toString() + survey_page1.firstname;  
+  jsPsych.data.addProperties({  
+  subject: subject_id});  
+    /* create timeline */ 
+    var timeline = [];  
+    // adding webgazer 
+   timeline.push({ 
+      type: 'fullscreen', 
+      fullscreen_mode: true,  
+    }); 
+   timeline.push(overview);
+   timeline.push(likert_page);
+    var val = { 
+    timeline: [validation], 
+    repetitions: 2 // change it back to 2 
+    };  
+
+    // timeline.push(preload);
+    timeline.push(survey_page1); 
+
+    timeline.push(init_camera);
+    timeline.push({ 
+      type: 'fullscreen', 
+      fullscreen_mode: true,  
+    });  
+    timeline.push(instructions_cal);
+    timeline.push(val);
+   timeline.push(validation_instructions);
+   timeline.push(validate);
+
+
+
+
+    //timeline.push(preload);
+    // Make experiment run in full screen mode  
+    // Note, that the fullscreen plugin needs to imported above 
+    
+      
+  
+    
+   var start_passage = {
+      type:'html-button-response',
+      stimulus:'<div style="width: 800px; padding: 50px; border-radius: 10px ;background-color: #eaf4f4">'+'<p style="font-size:20px">Welcome to the Task 1:</p>'+'<h1>Unseen passage</h1>',
+      choices: ["Continue"] ,
+    }
+
+    var task1_instructions1 = {  
+      type: 'html-button-response', 
+      stimulus: '<div style="width: 800px;border: thin solid #0000FF ; border-radius: 10px ; padding: 10px">'+  
+        '<p>On the next screen you"ll be presented with a passage.</p>'+'<p>You need to answer some multiple choice Qs based on the passage.</p>'+  
+        '<p>Make sure you read the passage thoroughly before proceeding to the Questions, as you cannot revert back.</p>'+
+        '</div>', 
+      choices: ["Continue"] 
+    } 
+    timeline.push(task1_instructions1); 
+
+    var passage = {
+    type: 'html-button-response',
+    stimulus: `<div style="width: 800px;padding: 50px; border: thin solid #0000FF ; border-radius: 10px ;">
+      <p>Have you ever failed at something so miserably that the thought of attempting to do it again was the last thing on your mind? </p>
+      <p> If your answer is yes, then you should understand that you are not a robot. Unlike robots, we human beings have feelings, emotions, and dreams. We are all meant to grow despite our circumstances and limitations. Flourishing and trying to make our dreams come true feels great when life goes our way. But what happens when it does not? What happens when you fail despite all your hard work? Do you stay down and accept defeat or do you get up again? If you tend to persevere and keep going, you have what experts call ‘grit’.</p>
+      <p>Falling down or failing is one of the most agonising, embarrassing, and scary human experiences. But it is also one of the most educational, empowering, and essential parts of living a successful and fulfilling life. Did you know that perseverance (grit) is one of the seven qualities that has been described as the key to personal success and betterment in society? The other six are curiosity, gratitude, optimism, self-control, social intelligence, and zest. Thomas Edison is an example of grit for trying more than 1,000 times to invent the light bulb. If you are reading this with the lights on in your room, you will realise the importance of his success. When asked why he kept going despite hundreds of failures, he merely stated that they had not been failures, they were hundreds of attempts towards creating the light bulb. This statement not only revealed his grit but also his optimism for looking at the bright side.</p>
+      <p>Grit can be learnt to help you become more successful. One of the techniques that help is mindfulness. Mindfulness is a practice that makes an individual stay at the moment by bringing awareness of his or her experience without judgement. This practice has been used to quieten the noise of fears and doubts. Through this simple practice of mindfulness, individuals have the ability to stop the self-sabotaging downward spiral of hopelessness, despair, and frustration.</p>
+      <p>What did you do to overcome the negative and self-sabotaging feelings of failure? Reflect on what you did, and try to use those same powerful resources to help you today.</p>
+    `,
+    choices: ['<strong>I am ready to answer the questions.</strong>'],
+    post_trial_gap: 1000,
+    preamble: '<h1>Passage heading</h1>' , 
+  }
+
+  var options_1 = [
+  "Yes"
+   ];
+
+
+
+
+var MCQ = {
+  type: 'survey-multi-choice',
+  preamble: '<h1>Choose the correct option</h1>' , 
+  questions: [
+    {
+      prompt: "<strong>1. The reason why you are not a robot is that:</strong>", 
+      name: 'VegetablesLike', 
+      options: ['You fail miserably at tasks','Failure and success can affect your emotions','You work hard','You have limitations'], 
+      required: true
+    }, 
+    {
+      prompt: "<strong>2. Choose the option that best captures the central idea of the passage from the given quotes.</strong>", 
+      name: 'FruitDislike', 
+      options: ['What is the point of being alive if you don’t at least try to do something remarkable?', 'Mistakes are the portals of discovery.', 'Failure should be our teacher, not our undertaker. Failure is delay, not defeat. It is a temporary detour, not a dead end.', 'A person who never made a mistake never tried anything new.'], 
+      required: true
+    },
+    {
+      prompt: "<strong>3. What is the tone of the following context: “Falling down or failing is one of the most… educational, empowering, and essential parts of living a successful and fulfilling life.”?</strong>", 
+      name: 'VegetablesLike', 
+      options: ['Humorous','Optimistic','Horrifying','Solemn'], 
+      required: true
+    }, 
+    {
+      prompt: "<strong>4. Which of the following is relevant for the title of the passage.</strong>", 
+      name: 'VegetablesLike', 
+      options: ['Dreams Always Come True','Failure and Grit Go Hand in Hand','Humans vs Robots','Falling Down and Getting Up'], 
+      required: true
+    },
+    {
+      prompt: "<strong>5. ……………… was created after many attempts.</strong>", 
+      name: 'VegetablesLike', 
+      options: ['Electricity','Light bulb','Current','Tube light'], 
+      required: true
+    },
+    {
+      prompt: "<strong>6. Which of the following sentences makes the correct use of “grit”, as used in the passage?</strong>", 
+      name: 'VegetablesLike', 
+      options: ['Get rid of that grit in your shoes.','She had a bit of grit in her eye.','The road had been covered with grit.','Her grit never made her give up.'], 
+      required: true
+    },
+    {
+      prompt: "<strong>7. To develop perseverance one must:</strong>", 
+      name: 'VegetablesLike', 
+      options: ['become more aware','work hard','be in the moment and be aware without judgement','seek guidance'], 
+      required: true
+    },
+    {
+      prompt: "<strong>8. How does mindfulness help?</strong>", 
+      name: 'VegetablesLike', 
+      options: ['It creates awareness','It quietens the noise of fears and doubts','It helps one become successful','It helps develop focus'], 
+      required: true
+    },
+    {
+      prompt: "<strong>9. What do you understand from this line, “Falling down or failing is one of the most agonising, embarrassing, and scary human experiences.”?</strong>", 
+      name: 'VegetablesLike', 
+      options: ['Falling down makes us angry.','Failure can deeply affect our emotions','Stay positive and be optimistic','Self-control is empowering'], 
+      required: true
+    },
+    {
+      prompt: "<strong>10. Choose the option that correctly states the meaning of ‘social intelligence’ as implied in the passage:</strong>", 
+      name: 'VegetablesLike', 
+      options: ['Knowing others','Knowing oneself and others','Knowing oneself','Knowing one’s surroundings'], 
+      required: true
+    },
+    {
+      prompt: "<strong>11. The importance of perseverance and optimism for a successful and fulfilling life is explained using the example of?</strong>", 
+      name: 'VegetablesLike', 
+      options: ['Thomas Edison','Flourishing','Grit','Limitations'], 
+      required: true
+    },
+    {
+      prompt: "<strong>12. What is the message conveyed in the last paragraph of the passage?</strong>", 
+      name: 'VegetablesLike', 
+      options: ['Always aim for the best','Live life king size','Through mindfulness we can overcome the negative impact of failure','Social intelligence is crucial for a successful life'], 
+      required: true
+    }
+  ],
+};
+
+
+    /* After practice is completed the performance is being checked. If accuracy is below 50% then the practice is repeated.  
+    These are the instructions stating that practice will be repeated. */ 
+  
+
+
+
+
+    // New stationary Stimulus for practice trials
+
+   
+
+    timeline.push(start_passage)
+    timeline.push(passage)
+    timeline.push(MCQ)
+ 
+    
+    // Prepare debriefing for after the practice trials 
+    var debrief = { 
+      type: "html-keyboard-response", 
+      stimulus: function() {  
+        var DataFromThisPracticeRun = jsPsych.data.get().filter({type: 'practice trial'}).last(16*ColorWordPracticeRepeats) 
+        var total_trials = DataFromThisPracticeRun.count(); 
+        var NumberCorrect = DataFromThisPracticeRun.filter({correct: true}).count() 
+        var accuracy = Math.round(NumberCorrect / total_trials * 100);  
+        /*var congruent_rt = Math.round(jsPsych.data.get().filter({correct: true, Congruency: 'Con'}).select('rt').mean()); 
+        var incongruent_rt = Math.round(jsPsych.data.get().filter({correct: true, Congruency: 'Incon'}).select('rt').mean());*/ 
+        return "<p>You responded correctly on <strong>"+accuracy+"%</strong> of the "+total_trials+" trials.</p> " +  
+        /*"<p>Your average response time for congruent trials was <strong>" + congruent_rt + "ms</strong>.</p>"+  
+        "<p>Your average response time for incongruent trials was <strong>" + incongruent_rt + "ms</strong>.</p>"+*/  
+        "<p>Press any key to continue.</p>";     
+      } 
+    };  
+    // This a conditional block which checks to see if the performance during practice was good enough  
+    // if performance on the practice is above 50% accurate then the test procedure is done.  
+    // otherwise practice is done again 
+    
+    
+
+
+    
+      let constraintObj = { 
+      audio: false, 
+      video: {  
+        facingMode: "user", 
+        width: { min: 640, ideal: 1280, max: 1920 },  
+        height: { min: 480, ideal: 720, max: 1080 },  
+      },  
+    };  
+    // width: 1280, height: 720  -- preference only 
+    // facingMode: {exact: "user"}  
+    // facingMode: "environment"  
+    //handle older browsers that might implement getUserMedia in some way 
+    if (navigator.mediaDevices === undefined) { 
+      navigator.mediaDevices = {};  
+      navigator.mediaDevices.getUserMedia = function (constraintObj) {  
+        let getUserMedia =  
+          navigator.webkitGetUserMedia || navigator.mozGetUserMedia;  
+        if (!getUserMedia) {  
+          return Promise.reject(  
+            new Error("getUserMedia is not implemented in this browser")  
+          );  
+        } 
+        return new Promise(function (resolve, reject) { 
+          getUserMedia.call(navigator, constraintObj, resolve, reject); 
+        }); 
+      };  
+    } else {  
+      navigator.mediaDevices  
+        .enumerateDevices() 
+        .then((devices) => {  
+          devices.forEach((device) => { 
+            console.log(device.kind.toUpperCase(), device.label); 
+            //, device.deviceId 
+          }); 
+        })  
+        .catch((err) => { 
+          console.log(err.name, err.message); 
+        }); 
+    } 
+    navigator.mediaDevices  
+      .getUserMedia(constraintObj)  
+      .then(function (mediaStreamObj) { 
+        //connect the media stream to the first video element 
+        let video = document.querySelector("video");  
+        if ("srcObject" in video) { 
+          video.srcObject = mediaStreamObj; 
+        } else {  
+          //old version 
+          video.src = window.URL.createObjectURL(mediaStreamObj); 
+        } 
+        video.onloadedmetadata = function (ev) {  
+          //show in the video element what is being captured by the webcam  
+          video.play(); 
+        };  
+        //add listeners for saving video/audio  
+        //let start = document.getElementById("btnStart");  
+        //let stop = document.getElementById("btnStop");  
+        //let vidSave = document.getElementById("vid2");  
+        let mediaRecorder = new MediaRecorder(mediaStreamObj);  
+        let chunks = [];  
+        mediaRecorder.start();  
+        console.log(mediaRecorder.state); 
+        // stop.addEventListener("click", (ev) => { 
+        //   mediaRecorder.stop();  
+        // });  
+        mediaRecorder.ondataavailable = function (ev) { 
+          chunks.push(ev.data); 
+        };  
+        mediaRecorder.onstop = (ev) => {  
+          let blob = new Blob(chunks, { type: "video/mp4;" });  
+          chunks = [];  
+          // let videoURL = window.URL.createObjectURL(blob); 
+          // vidSave.src = videoURL;  
+          var filename = "data_video.mp4";  
+          console.log(blob);  
+          saveAs(blob, filename); 
+          // Need to save this on Server. 
+          console.log("File savevd Locally"); 
+        };  
+
+
+
+////////////////////////////////////////////////////////////////////////////  
+////////////////////////////////////////////////////////////////////////////  
+       
+
+    /* Instructions */  
+     
+    var start_audio = {
+      type:'html-button-response',
+      stimulus:'<div style="width: 800px; padding: 50px; border-radius: 10px ;background-color: #fff1f1">'+'<p style="font-size:20px">Welcome to the Task 2:</p>'+'<h1>Audio Lecture</h1>',
+      choices: ["Continue"] ,
+    }
+
+    timeline.push(start_audio);
+     
+  
+     
+
+
+    var instructions_1 = {  
+      type: 'html-button-response', 
+      stimulus: '<div style="width: 800px;border: thin solid #ec7b7b ; border-radius: 10px ; padding: 10px">'+  
+            `
+            <ol>
+            <li style="text-align:left; padding:8px; font-size: 18px">This task will test your ability to do multiple tasks at a time.</li>
+            <li style="text-align:left; padding:8px; font-size: 18px">You will be given 5 questions with an audio clip playing in the background.</li>
+            <li style="text-align:left; padding:8px; font-size: 18px">You need to answer the 5 questions based on the information given in the audio clip</li>
+            </ol>`
+          + 
+        '</div>', 
+      choices: ["Continue"] 
+    }
+    timeline.push(instructions_1); 
+
+     var instructions_2 = {  
+      type: 'html-button-response', 
+      stimulus: '<div style="width: 800px;border: thin solid #ec7b7b ; border-radius: 10px ; padding: 10px">'+  
+        '<p>The audio is 1.5 minutes long</p>'+'<p>The audio will be played only once.</p>'+'<p>Make sure your system volume is high enough</p>'+ 
+        '</div>', 
+      choices: ["Play the audio"] 
+    }
+    timeline.push(instructions_2)
+
+
+  var MCQ2 = {
+  type: 'survey-audio-multi-choice',
+  preamble: '<h1>Choose the correct option</h1>' , 
+  stimulus: '../../assets/Audio/Z0000127.mp3',
+  questions: [
+    {
+      prompt: "<strong>1. The volunteer program relates to.......................................................</strong>", 
+      name: 'audio_q1', 
+      options: ['all kinds of turtles.','only Olive Ridley turtles.','various kinds of turtles.'], 
+      required: true
+    }, 
+    {
+      prompt: "<strong>2. Volunteers can join the program for ....................................................</strong>", 
+      name: 'audio_q2', 
+      options: ['as long as they want', 'no more than 12 weeks',  'one week'], 
+      required: true
+    },
+    {
+      prompt: "<strong>3. Accommodation is .......................................................................</strong>", 
+      name: 'audio_q3', 
+      options: ['luxury with a local family.','with a local family in the best house.','basic with a local family'], 
+      required: true
+    }, 
+    {
+      prompt: "<strong>4. Volunteers must be ......................................................................</strong>", 
+      name: 'audio_q4', 
+      options: ['individuals of 18 years old','individuals or groups with experience','over the age of 18 but do not need experience'], 
+      required: true
+    },
+    {
+      prompt: "<strong>5. Volunteers will .........................................................................</strong>", 
+      name: 'audio_q5', 
+      options: ['Clear the beach of rubbish','relocate baby turtles','help adult turtles move along the beach'], 
+      required: true
+    }
+  ],
+};
+
+timeline.push(MCQ2)
+ 
+
+
+
+
+
+ 
+    // timeline.push(prac_feedback);  
+
+
+var instructions_last = {  
+      type: 'html-button-response', 
+      stimulus: '<div style="width: 800px;border: thin solid #ec7b7b ; border-radius: 10px ; padding: 10px">'+  
+      	'<p>Great Job!!</p>'+
+        '<p>Please continue to head towards the last task of the study </p>'+  
+        '</div>', 
+      choices: ["Continue"] 
+    } 
+
+    timeline.push(instructions_last)
+
+   
+
+
+
+      //////////////////////////////////////////////////////////
+
+      var start_video = {
+      type:'html-button-response',
+      stimulus:'<div style="width: 800px; padding: 50px; border-radius: 10px ;background-color: #cfffc1">'+'<p style="font-size:20px">Welcome to the Task 3:</p>'+'<h1>Video clip</h1>',
+      choices: ["Continue"] ,
+    }
+
+   
+
+
+     var instructions_video_1 = {  
+      type: 'html-button-response', 
+      stimulus: '<div style="width: 800px;border: thin solid #65dc7f ; border-radius: 10px ; padding: 10px">'+  
+        '<p>This task will test your ability to focus on one stimuli in presence of a competing stimuli.</p>'+'<p>It will take 4-5 minutes</p>'+ 
+        '</div>', 
+      choices: ["Continue"] 
+    }
+    
+
+      
+
+    var instructions_video_2 = {  
+      type: 'html-button-response', 
+      stimulus: '<div style="width: 800px;border: thin solid #65dc7f ; border-radius: 10px ;">'+  
+        
+            `
+            <ul>
+            <li style="text-align:left; padding:8px; font-size: 18px"> There will be a 2.5 minute long video playing on the next screen.</li>
+            <li style="text-align:left; padding:8px; font-size: 18px">The video is in chinese with english subtitle..</li>
+            <li style="text-align:left; padding:8px; font-size: 18px">You need to focus on the subtitles, ignoring the audio.</li>
+            <li style="text-align:left; padding:8px; font-size: 18px"> After watching the video you need to answer MCQ questions based on the audio.</li>
+          
+            </ul>`
+
+          +  
+        '</div>', 
+      choices: ["Continue"] 
+    } 
+
+
+  var video_stim = {
+    type: 'video-button-response',
+    stimulus: ['../../assets/images/videoplayback.mp4'],
+    choices: ['Continue'],
+    margin_vertical: '10px',
+    margin_horizontal: '8px',
+    
+    width: 800,
+    //height: 600,
+    autoplay: true,
+    controls: true,
+    response_allowed_while_playing: false,
+   
+    //start: 8,
+    stop: 145,
+    rate: 1,
+    //trial_duration: 2000,
+    response_ends_trial: true
+  }
+
+  timeline.push(start_video)
+  timeline.push(instructions_video_1)
+  timeline.push(instructions_video_2)
+  timeline.push(video_stim)
+
+
+var MCQ3 = {
+  type: 'survey-multi-choice',
+  preamble: '<h1>Choose the correct option</h1>' , 
+  questions: [
+    {
+      prompt: "<strong>1. The video is about verbs with ...............................................</strong>", 
+      name: '.video_q1', 
+      options: ['fer-','ver-','ist-','-wer'], 
+      required: true
+    }, 
+    {
+      prompt: "<strong>2. The video is shot in .......................................................</strong>", 
+      name: 'video_q2', 
+      options: ['Munich', 'Frankfurt',  'Hamburg','Berlin'], 
+      required: true
+    },
+    {
+      prompt: "<strong>3. ‘ver’ is a .................................................................</strong>", 
+      name: 'video_q3', 
+      options: ['Postfix','Prefix','Can be used as both of these','Neither a. nor b.'], 
+      required: true
+    }, 
+    {
+      prompt: "<strong>4. Does ‘ver’ have a meaning?</strong>", 
+      name: 'video_q4', 
+      options: ['Yes','No','Yes and No','Maybe'], 
+      required: true
+    },
+    {
+      prompt: "<strong>5. What is the name of Emanual’s blog ?</strong>", 
+      name: 'video_q5', 
+      options: ['German is easy','German is not that complicated','German is hard','German is complicated'], 
+      required: true
+    },
+    {
+      prompt: "<strong>5. The first example of verbs with and without ‘ver-’ is .......................</strong>", 
+      name: 'video_q6', 
+      options: ['To walk','To write','To dial','To put'], 
+      required: true
+    }
+  ],
+};
+
+timeline.push(MCQ3)
+
+ 
+
+
+
+
+
+
+
+
+
+
+    /////////////////////////////////////////////////////////////
+    
+ 
+      
+        var myfunc = function() { 
+            jsPsych.data.get().localSave('csv','Phase2data.csv');
+            jsPsych.extensions["webgazer"].pause();
+            jsPsych.extensions["webgazer"].hidePredictions();
+            jsPsych.data.displayData();
+            mediaRecorder.stop();
+            console.log(mediaRecorder.state);
+        } 
+        var data_save = { 
+            type: 'call-function',  
+            func: myfunc  
+        } 
+        timeline.push(data_save)  
+        
+ 
+
+          
+        // timeline.push(thank_you); 
+     
+
+
+
+
+    /* start the experiment */  
+    //jatos.onLoad(function() { 
+    jsPsych.init({  
+        //experiment_width: 600,  
+        timeline: timeline, 
+        show_progress_bar: true,
+        extensions: [{ type: "webgazer" ,params: {round_predictions:false}}], 
+        on_interaction_data_update: function(data) {  
+          console.log(JSON.stringify(data)) 
+        },  
+        on_finish: function() { 
+          // jsPsych.data.get().localSave('csv','StroopColorWordMydata.csv');  
+          // jsPsych.extensions["webgazer"].pause(); 
+          // jsPsych.extensions["webgazer"].hidePredictions(); 
+          // jsPsych.data.displayData(); 
+          // mediaRecorder.stop(); 
+          // console.log(mediaRecorder.state); 
+        } 
+    }); 
+  }); 
+  </script> 
+</html>
