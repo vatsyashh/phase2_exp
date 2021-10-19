@@ -146,6 +146,10 @@ var likert_page = {
   subject: subject_id});  
     /* create timeline */ 
     var timeline = [];  
+   timeline.push({
+    type: 'preload',
+    auto_preload: true
+  });
     // adding webgazer 
    timeline.push({ 
       type: 'fullscreen', 
