@@ -371,8 +371,8 @@ jsPsych.plugins['survey-audio-multi-choice'] = (function() {
       display_element.innerHTML = '';
 
       // next trial
-      audio.pause();
-      // audio.stop();
+//       audio.pause();
+      audio.stop();
       jsPsych.finishTrial(trial_data);
 
     });
