@@ -149,6 +149,11 @@ var likert_page = {
     /* create timeline */ 
     var timeline = [];  
     // adding webgazer 
+   
+          timeline.push({
+    type: 'preload',
+    auto_preload: true
+  });
    timeline.push({ 
       type: 'fullscreen', 
       fullscreen_mode: true,  
@@ -156,10 +161,7 @@ var likert_page = {
    // timeline.push(overview);
    timeline.push(likert_page);
    
-        timeline.push({
-    type: 'preload',
-    auto_preload: true
-  });
+ 
    
    
     var val = { 
