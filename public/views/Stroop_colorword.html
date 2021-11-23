@@ -131,10 +131,7 @@ var likert_page = {
     post_trial_gap: 1000
   }
     
-     timeline.push({
-    type: 'preload',
-    auto_preload: true
-  });
+
 
   var validate = {
     type: 'webgazer-validate',
@@ -158,6 +155,13 @@ var likert_page = {
     }); 
    // timeline.push(overview);
    timeline.push(likert_page);
+   
+        timeline.push({
+    type: 'preload',
+    auto_preload: true
+  });
+   
+   
     var val = { 
     timeline: [validation], 
     repetitions: 2 // change it back to 2 
