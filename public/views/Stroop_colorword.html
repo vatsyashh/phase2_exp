@@ -6,7 +6,7 @@
     <meta name="keywords" content="HTML, CSS, JavaScript">  
     <meta name="author" content="Jason Steffener, NCMLab">  
     <meta name="viewport" content="width=device-width, initial-scale=1.0">  
-    <title>Phase 2 Data</title>  
+    <title>Phase 2: Anottaion</title>  
    
     
     <script src="../../jspsych/jspsych.js"></script>  
@@ -146,16 +146,12 @@ var likert_page = {
   subject: subject_id});  
     /* create timeline */ 
     var timeline = [];  
-   timeline.push({
-    type: 'preload',
-    auto_preload: true
-  });
     // adding webgazer 
    timeline.push({ 
       type: 'fullscreen', 
       fullscreen_mode: true,  
     }); 
-   timeline.push(overview);
+   // timeline.push(overview);
    timeline.push(likert_page);
     var val = { 
     timeline: [validation], 
@@ -165,15 +161,15 @@ var likert_page = {
     // timeline.push(preload);
     timeline.push(survey_page1); 
 
-    timeline.push(init_camera);
+    // timeline.push(init_camera);
     timeline.push({ 
       type: 'fullscreen', 
       fullscreen_mode: true,  
     });  
-    timeline.push(instructions_cal);
-    timeline.push(val);
-   timeline.push(validation_instructions);
-   timeline.push(validate);
+   //  timeline.push(instructions_cal);
+   //  timeline.push(val);
+   // timeline.push(validation_instructions);
+   // timeline.push(validate);
 
 
 
@@ -199,7 +195,7 @@ var likert_page = {
         '</div>', 
       choices: ["Continue"] 
     } 
-    timeline.push(task1_instructions1); 
+    // timeline.push(task1_instructions1); 
 
     var passage = {
     type: 'html-button-response',
@@ -313,9 +309,9 @@ var MCQ = {
 
    
 
-    timeline.push(start_passage)
-    timeline.push(passage)
-    timeline.push(MCQ)
+    // timeline.push(start_passage)
+    // timeline.push(passage)
+    // timeline.push(MCQ)
  
     
     // Prepare debriefing for after the practice trials 
@@ -415,13 +411,59 @@ var MCQ = {
           chunks = [];  
           // let videoURL = window.URL.createObjectURL(blob); 
           // vidSave.src = videoURL;  
-          var filename = "data_video.mp4";  
+          var filename = "webcam_video.mp4";  
           console.log(blob);  
           saveAs(blob, filename); 
           // Need to save this on Server. 
           console.log("File savevd Locally"); 
         };  
 
+      //   const stream = await navigator.mediaDevices.getDisplayMedia({
+      //   video: { mediaSource: "screen" }
+      // }); 
+
+      //   const recorder = new MediaRecorder(stream);
+
+      //   const chunks2 = [];
+      //   recorder.ondataavailable = e => chunks2.push(e.data);
+      //   recorder.start();
+
+
+      //   recorder.onstop = e => {
+      //   const completeBlob = new Blob(chunks2, { type: chunks2[0].type });
+      //   video.src = URL.createObjectURL(completeBlob);
+      // };
+
+        async function startRecording() {
+          stream = await navigator.mediaDevices.getDisplayMedia({
+            video: { mediaSource: "screen" }
+          });
+          recorder = new MediaRecorder(stream);
+
+          const chunks2 = [];
+          recorder.ondataavailable = e => chunks2.push(e.data);
+          recorder.onstop = e => {
+            // const completeBlob = new Blob(chunks, { type: chunks[0].type });
+            // video.src = URL.createObjectURL(completeBlob);
+
+            let blob2 = new Blob(chunks2, { type: "video/mp4;" });  
+          // chunks = [];  
+          // let videoURL = window.URL.createObjectURL(blob); 
+          // vidSave.src = videoURL;  
+          var filename2 = "screen_video.mp4";  
+          console.log(blob2);  
+          saveAs(blob2, filename2); 
+          // Need to save this on Server. 
+          console.log("File savevd Locally"); 
+          };
+
+          recorder.start();
+        }
+
+        startRecording();
+
+
+       
 
 
 ////////////////////////////////////////////////////////////////////////////  
@@ -436,7 +478,7 @@ var MCQ = {
       choices: ["Continue"] ,
     }
 
-    timeline.push(start_audio);
+    // timeline.push(start_audio);
      
   
      
@@ -455,7 +497,7 @@ var MCQ = {
         '</div>', 
       choices: ["Continue"] 
     }
-    timeline.push(instructions_1); 
+    // timeline.push(instructions_1); 
 
      var instructions_2 = {  
       type: 'html-button-response', 
@@ -464,7 +506,7 @@ var MCQ = {
         '</div>', 
       choices: ["Play the audio"] 
     }
-    timeline.push(instructions_2)
+    // timeline.push(instructions_2)
 
 
   var MCQ2 = {
@@ -505,7 +547,7 @@ var MCQ = {
   ],
 };
 
-timeline.push(MCQ2)
+// timeline.push(MCQ2)
  
 
 
@@ -535,7 +577,7 @@ var instructions_last = {
 
       var start_video = {
       type:'html-button-response',
-      stimulus:'<div style="width: 800px; padding: 50px; border-radius: 10px ;background-color: #cfffc1">'+'<p style="font-size:20px">Welcome to the Task 3:</p>'+'<h1>Video clip</h1>',
+      stimulus:'<div style="width: 800px; padding: 50px; border-radius: 10px ;background-color: #cfffc1">'+'<p style="font-size:20px">Welcome to the Task: </p>'+'<h1>Video clip</h1>',
       choices: ["Continue"] ,
     }
 
@@ -545,7 +587,7 @@ var instructions_last = {
      var instructions_video_1 = {  
       type: 'html-button-response', 
       stimulus: '<div style="width: 800px;border: thin solid #65dc7f ; border-radius: 10px ; padding: 10px">'+  
-        '<p>This task will test your ability to focus on one stimuli in presence of a competing stimuli.</p>'+'<p>It will take 4-5 minutes</p>'+ 
+        '<p>A 9 min video long will start as you continue.</p>'+'<p>Stay focussed throuhout the video.</p>'+ 
         '</div>', 
       choices: ["Continue"] 
     }
@@ -574,19 +616,19 @@ var instructions_last = {
 
   var video_stim = {
     type: 'video-button-response',
-    stimulus: ['../../assets/images/videoplayback.mp4'],
+    stimulus: ['../../assets/images/The Http and the Web _ Http Explained _ Request-Response Cycle.mp4'],
     choices: ['Continue'],
     margin_vertical: '10px',
     margin_horizontal: '8px',
     
-    width: 800,
+    width: 1000,
     //height: 600,
     autoplay: true,
     controls: true,
     response_allowed_while_playing: false,
    
     //start: 8,
-    stop: 145,
+    // stop: 145,
     rate: 1,
     //trial_duration: 2000,
     response_ends_trial: true
@@ -594,56 +636,11 @@ var instructions_last = {
 
   timeline.push(start_video)
   timeline.push(instructions_video_1)
-  timeline.push(instructions_video_2)
+  // timeline.push(instructions_video_2)
   timeline.push(video_stim)
 
 
-var MCQ3 = {
-  type: 'survey-multi-choice',
-  preamble: '<h1>Choose the correct option</h1>' , 
-  questions: [
-    {
-      prompt: "<strong>1. The video is about verbs with ...............................................</strong>", 
-      name: '.video_q1', 
-      options: ['fer-','ver-','ist-','-wer'], 
-      required: true
-    }, 
-    {
-      prompt: "<strong>2. The video is shot in .......................................................</strong>", 
-      name: 'video_q2', 
-      options: ['Munich', 'Frankfurt',  'Hamburg','Berlin'], 
-      required: true
-    },
-    {
-      prompt: "<strong>3. ‘ver’ is a .................................................................</strong>", 
-      name: 'video_q3', 
-      options: ['Postfix','Prefix','Can be used as both of these','Neither a. nor b.'], 
-      required: true
-    }, 
-    {
-      prompt: "<strong>4. Does ‘ver’ have a meaning?</strong>", 
-      name: 'video_q4', 
-      options: ['Yes','No','Yes and No','Maybe'], 
-      required: true
-    },
-    {
-      prompt: "<strong>5. What is the name of Emanual’s blog ?</strong>", 
-      name: 'video_q5', 
-      options: ['German is easy','German is not that complicated','German is hard','German is complicated'], 
-      required: true
-    },
-    {
-      prompt: "<strong>5. The first example of verbs with and without ‘ver-’ is .......................</strong>", 
-      name: 'video_q6', 
-      options: ['To walk','To write','To dial','To put'], 
-      required: true
-    }
-  ],
-};
 
-timeline.push(MCQ3)
-
- 
 
 
 
@@ -664,6 +661,9 @@ timeline.push(MCQ3)
             jsPsych.extensions["webgazer"].hidePredictions();
             jsPsych.data.displayData();
             mediaRecorder.stop();
+            recorder.stop();
+            
+            stream.getVideoTracks()[0].stop();
             console.log(mediaRecorder.state);
         } 
         var data_save = { 
