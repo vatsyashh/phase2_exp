@@ -307,7 +307,18 @@ var MCQ = {
   
 
 
+   var scale_2 = [
+  "1","2","3","4","5"
+   ];
 
+var SR1 = {
+  type: 'survey-likert',
+  questions: [
+    {prompt: "How attentive were you? (1 being low and 5 being highly attentive)", name: 'Webcam', labels: scale_2, required:true},                                                        
+  ],
+  preamble: '<h1>Self reporting</h1>' , 
+  randomize_question_order: false
+};
 
     // New stationary Stimulus for practice trials
 
@@ -316,6 +327,7 @@ var MCQ = {
     timeline.push(start_passage)
     timeline.push(passage)
     timeline.push(MCQ)
+   timeline.push(SR1)
  
     
     // Prepare debriefing for after the practice trials 
