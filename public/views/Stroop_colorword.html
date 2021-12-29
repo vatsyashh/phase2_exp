@@ -520,9 +520,16 @@ var SR1 = {
 timeline.push(MCQ2)
  
 
+var SR2 = {
+  type: 'survey-likert',
+  questions: [
+    {prompt: "How attentive were you? (1 being low and 5 being highly attentive)", name: 'Webcam', labels: scale_2, required:true},                                                        
+  ],
+  preamble: '<h1>Self reporting</h1>' , 
+  randomize_question_order: false
+};
 
-
-
+timeline.push(SR2);
 
  
     // timeline.push(prac_feedback);  
@@ -655,10 +662,18 @@ var MCQ3 = {
 
 timeline.push(MCQ3)
 
+     var SR3 = {
+  type: 'survey-likert',
+  questions: [
+    {prompt: "How attentive were you? (1 being low and 5 being highly attentive)", name: 'Webcam', labels: scale_2, required:true},                                                        
+  ],
+  preamble: '<h1>Self reporting</h1>' , 
+  randomize_question_order: false
+};
  
 
 
-
+timeline.push(SR3);
 
 
 
