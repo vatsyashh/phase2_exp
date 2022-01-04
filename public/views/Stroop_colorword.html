@@ -213,6 +213,14 @@ var likert_page = {
     choices: ['<strong>I am ready to answer the questions.</strong>'],
     post_trial_gap: 1000,
     preamble: '<h1>Passage heading</h1>' , 
+     extensions: [ 
+      { 
+        type: "webgazer", 
+        params: { 
+          targets: ["#jspsych-html-keyboard-response-stimulus"],  
+        },  
+      },  
+      ]
   }
 
   var options_1 = [
@@ -299,6 +307,14 @@ var MCQ = {
       required: true
     }
   ],
+ extensions: [ 
+      { 
+        type: "webgazer", 
+        params: { 
+          targets: ["#jspsych-html-keyboard-response-stimulus"],  
+        },  
+      },  
+      ]
 };
 
 
@@ -515,6 +531,14 @@ var SR1 = {
       required: true
     }
   ],
+   extensions: [ 
+      { 
+        type: "webgazer", 
+        params: { 
+          targets: ["#jspsych-html-keyboard-response-stimulus"],  
+        },  
+      },  
+      ]
 };
 
 timeline.push(MCQ2)
@@ -556,6 +580,7 @@ var instructions_last = {
       type:'html-button-response',
       stimulus:'<div style="width: 800px; padding: 50px; border-radius: 10px ;background-color: #cfffc1">'+'<p style="font-size:20px">Welcome to the Task 3:</p>'+'<h1>Video clip</h1>',
       choices: ["Continue"] ,
+       
     }
 
    
@@ -608,7 +633,15 @@ var instructions_last = {
     stop: 145,
     rate: 1,
     //trial_duration: 2000,
-    response_ends_trial: true
+    response_ends_trial: true,
+   extensions: [ 
+      { 
+        type: "webgazer", 
+        params: { 
+          targets: ["#jspsych-html-keyboard-response-stimulus"],  
+        },  
+      },  
+      ]
   }
 
   timeline.push(start_video)
@@ -658,6 +691,14 @@ var MCQ3 = {
       required: true
     }
   ],
+ extensions: [ 
+      { 
+        type: "webgazer", 
+        params: { 
+          targets: ["#jspsych-html-keyboard-response-stimulus"],  
+        },  
+      },  
+      ]
 };
 
 timeline.push(MCQ3)
